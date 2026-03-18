@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { PageHeader } from "@/app/components/PageHeader";
 import { TransactionForm } from "@/app/components/transactions/TransactionForm";
 import { Button } from "@/app/components/ui/Button";
-import { Card } from "@/app/components/ui/Card";
 import { Modal } from "@/app/components/ui/Modal";
 import { addTransaction, getCategories, getWallets } from "@/lib/db";
 import type { Category, Wallet } from "@/lib/types";
@@ -15,7 +14,6 @@ export default function AddTransactionPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showFormModal, setShowFormModal] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -45,32 +43,22 @@ export default function AddTransactionPage() {
       {loading ? (
         <p className="muted text-sm">Loading form...</p>
       ) : (
-        <>
-          <Card className="space-y-3">
-            <p className="text-sm muted">
-              Entry form opens in a popup so the page stays compact on small screens.
-            </p>
-            <Button className="w-full" onClick={() => setShowFormModal(true)}>
-              Open Transaction Form
-            </Button>
-          </Card>
-          <Modal
-            open={showFormModal}
-            onClose={() => setShowFormModal(false)}
-            title="New Transaction"
-            subtitle="Quick Entry"
-          >
-            <TransactionForm
-              categories={categories}
-              wallets={wallets}
-              submitLabel="Save Transaction"
-              onSubmit={async (values) => {
-                await addTransaction(values);
-                router.push("/");
-              }}
-            />
-          </Modal>
-        </>
+        <Modal
+          open
+          onClose={() => router.push("/")}
+          title="New Transaction"
+          subtitle="Quick Entry"
+        >
+          <TransactionForm
+            categories={categories}
+            wallets={wallets}
+            submitLabel="Save Transaction"
+            onSubmit={async (values) => {
+              await addTransaction(values);
+              router.push("/");
+            }}
+          />
+        </Modal>
       )}
     </main>
   );
