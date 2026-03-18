@@ -4,15 +4,17 @@ export function PageHeader({
   title,
   subtitle,
   actions,
+  showDivider = true,
 }: {
   title: string;
   subtitle?: string;
   actions?: ReactNode;
+  showDivider?: boolean;
 }) {
   return (
     <header className="mb-5">
       <p className="screen-title">{subtitle ?? "Grain Finance"}</p>
-      <div className="glyph-line" />
+      {showDivider ? <div className="glyph-line" /> : null}
       <div className="flex items-end justify-between gap-3">
         <h1 className="matrix-label text-2xl font-semibold">
           {title}

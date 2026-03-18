@@ -7,7 +7,6 @@ import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { ListRow } from "@/app/components/ui/ListRow";
 import {
-  applyDueTemplates,
   getBudgets,
   getCategories,
   getPreferences,
@@ -16,7 +15,6 @@ import {
 import {
   budgetProgress,
   categoryLabelMap,
-  getMonthToDateDelta,
   monthKey,
   summarizeTransactions,
 } from "@/lib/finance";
@@ -56,6 +54,48 @@ function MatrixMeter({
   );
 }
 
+function EmptyLedgerState() {
+  return (
+    <div className="space-y-3">
+      <div className="rounded-none border border-(--border) p-3">
+        <div className="mb-2 flex items-center justify-between text-[0.62rem] uppercase tracking-[0.16em] text-foreground matrix-label">
+          <span>Matrix Seed</span>
+          <span>0 TX</span>
+        </div>
+        <div className="grid grid-cols-12 gap-1">
+          {Array.from({ length: 24 }).map((_, index) => {
+            const active = index % 5 === 0 || index % 7 === 0;
+            return (
+              <span
+                key={index}
+                className={`h-2 border border-(--border) ${
+                  active ? "animate-pulse bg-white/80" : "bg-transparent"
+                }`}
+                style={active ? { animationDelay: `${(index % 6) * 180}ms` } : undefined}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      <p className="text-xs matrix-label muted-strong">
+        No entries yet. Seed the grid with your first transaction.
+      </p>
+
+      <div className="grid grid-cols-2 gap-2">
+        <Link href="/transactions/new">
+          <Button className="w-full">Add First</Button>
+        </Link>
+        <Link href="/templates">
+          <Button variant="secondary" className="w-full">
+            Add Recurring
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -66,7 +106,6 @@ export default function Home() {
     locale: "en-US",
   });
   const [loading, setLoading] = useState(true);
-  const [runningDue, setRunningDue] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -87,16 +126,15 @@ export default function Home() {
     load().catch(() => setLoading(false));
   }, []);
 
-  const summary = useMemo(
-    () => summarizeTransactions(transactions),
-    [transactions],
-  );
-  const mtdDelta = useMemo(
-    () => getMonthToDateDelta(transactions),
-    [transactions],
+  const currentMonth = monthKey();
+  const monthlySummary = useMemo(
+    () =>
+      summarizeTransactions(
+        transactions.filter((item) => item.createdAt.slice(0, 7) === currentMonth),
+      ),
+    [transactions, currentMonth],
   );
   const labels = useMemo(() => categoryLabelMap(categories), [categories]);
-  const currentMonth = monthKey();
   const budgetItems = useMemo(
     () => budgetProgress(budgets, transactions, categories, currentMonth),
     [budgets, transactions, categories, currentMonth],
@@ -105,55 +143,38 @@ export default function Home() {
     () => budgetItems.filter((item) => item.progress >= 0.6).slice(0, 3),
     [budgetItems],
   );
+  const isEmptyState = !loading && transactions.length === 0;
 
   return (
     <main>
       <PageHeader
         title="Dashboard"
         subtitle="Grain Finance"
-        actions={
-          <div className="flex gap-2">
-            <Button
-              variant="secondary"
-              className="text-xs"
-              disabled={runningDue}
-              onClick={async () => {
-                setRunningDue(true);
-                try {
-                  const count = await applyDueTemplates();
-                  if (count > 0) {
-                    const refreshed = await getTransactions();
-                    setTransactions(refreshed);
-                  }
-                } finally {
-                  setRunningDue(false);
-                }
-              }}
-            >
-              {runningDue ? "Running..." : "Run Due"}
-            </Button>
-          </div>
-        }
+        showDivider={false}
       />
 
-      <section className="space-y-4">
+      <section className={isEmptyState ? "space-y-4" : "space-y-4"}>
         <Card className="space-y-3">
           <p className="text-xs uppercase tracking-[0.12em] text-(--muted)">
-            Current Balance
+            This Month
           </p>
           <p className="text-4xl font-semibold tracking-[0.05em]">
-            {formatCurrency(summary.net, preferences.locale, preferences.currency)}
+            {formatCurrency(
+              monthlySummary.net,
+              preferences.locale,
+              preferences.currency,
+            )}
           </p>
           <p className="text-xs uppercase tracking-[0.12em] text-(--muted)">
-            Month To Date:{" "}
-            {formatCurrency(mtdDelta, preferences.locale, preferences.currency)}
+            Net this month
           </p>
           <div className="grid grid-cols-2 gap-3 border-y border-(--border) py-2 text-xs matrix-label">
             <div>
               <p className="text-(--muted)">Income</p>
               <p className="mt-1">
+                +
                 {formatCurrency(
-                  summary.income,
+                  monthlySummary.income,
                   preferences.locale,
                   preferences.currency,
                 )}
@@ -162,34 +183,34 @@ export default function Home() {
             <div>
               <p className="text-(--muted)">Expenses</p>
               <p className="mt-1">
+                -
                 {formatCurrency(
-                  summary.expenses,
+                  monthlySummary.expenses,
                   preferences.locale,
                   preferences.currency,
                 )}
               </p>
             </div>
           </div>
-          <div className="flex items-center justify-between text-xs matrix-label">
+          <div className="flex items-center justify-end text-xs matrix-label">
             <Link href="/transactions/new">
               <Button className="px-3">Add Transaction</Button>
             </Link>
-            <div className="flex gap-3 text-(--muted)">
-              <Link href="/insights">Insights</Link>
-              <Link href="/budgets">Budgets</Link>
-              <Link href="/wallets">Wallets</Link>
-            </div>
           </div>
         </Card>
 
-        <Card className="space-y-3">
+        <Card className={isEmptyState ? "space-y-3 p-4" : "space-y-3"}>
           <div className="flex items-center justify-between">
             <p className="text-xs matrix-label text-(--muted)">Budget Focus</p>
-            <Link href="/budgets" className="text-xs matrix-label">
-              Manage
+            <Link href="/budgets" className="text-xs matrix-label text-foreground">
+              {isEmptyState ? "Setup" : "Manage"}
             </Link>
           </div>
-          {budgetItems.length === 0 ? (
+          {isEmptyState ? (
+            <p className="text-xs matrix-label muted-strong">
+              Set a monthly budget to activate tracking.
+            </p>
+          ) : budgetItems.length === 0 ? (
             <p className="text-sm muted">No budgets set for this month.</p>
           ) : focusedBudgets.length === 0 ? (
             <p className="text-sm muted">
@@ -220,8 +241,8 @@ export default function Home() {
           )}
         </Card>
 
-        <Card>
-          <div className="mb-3 flex items-center justify-between">
+        <Card className={isEmptyState ? "p-4" : ""}>
+          <div className={`${isEmptyState ? "mb-3" : "mb-3"} flex items-center justify-between`}>
             <p className="text-xs uppercase tracking-[0.12em] text-(--muted)">
               Recent Transactions
             </p>
@@ -233,14 +254,7 @@ export default function Home() {
           {loading ? <p className="muted text-sm">Loading...</p> : null}
 
           {!loading && transactions.length === 0 ? (
-            <div className="space-y-3">
-              <p className="text-sm muted">
-                No transactions yet. Add your first entry to start tracking.
-              </p>
-              <Link href="/transactions/new">
-                <Button className="w-full">Add First Transaction</Button>
-              </Link>
-            </div>
+            <EmptyLedgerState />
           ) : (
             <div className="space-y-2">
               {transactions.slice(0, 4).map((transaction) => (
