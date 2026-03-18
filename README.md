@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Grain
 
-## Getting Started
+Grain is a local finance tracker PWA
 
-First, run the development server:
+## Features
+
+- Offline/local-first data via IndexedDB (no account required).
+- Nothing-inspired monochrome matrix and glyph-like UI language.
+- Dashboard with live balance, month delta, wallet snapshot, and recent history.
+- Monthly budgets with progress bars and over-limit alerts.
+- Insights with weekly/monthly spend trends, category breakdown, and highlights.
+- Transaction CRUD with wallet selection, split support, and fast entry flow.
+- Advanced history filters: type, category, wallet, date range, min/max amount.
+- Smart search operators in history:
+  - `cat:food`
+  - `wallet:main`
+  - `type:expense`
+  - `min:10 max:200`
+- Recurring templates (weekly/monthly) with due-run processing.
+- Multi-wallet support, wallet-to-wallet transfers, and goal tracking.
+- Category management, local export/import JSON backups, and hard reset.
+- Installable PWA (manifest + service worker).
+
+## Run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

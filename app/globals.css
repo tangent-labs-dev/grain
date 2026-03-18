@@ -1,8 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --surface: #0a0a0a;
+  --surface-elevated: #111111;
+  --surface-glass: rgba(12, 12, 12, 0.82);
+  --foreground: #ededed;
+  --muted: #989898;
+  --border: #2a2a2a;
+  --danger: #d0d0d0;
+  --success: #f5f5f5;
+  --radius-sm: 0px;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --ease-fast: 120ms;
+  --ease-base: 160ms;
+  --ease-slow: 180ms;
 }
 
 @theme inline {
@@ -12,15 +31,146 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.11) 1px, transparent 0),
+    radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-size: 14px 14px, 42px 42px;
+}
+
+a,
+button,
+input,
+select {
+  transition-duration: var(--ease-base);
+  transition-timing-function: ease;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) 84px;
+  background:
+    linear-gradient(180deg, rgba(18, 18, 18, 0.88) 0%, rgba(2, 2, 2, 0.96) 100%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.035) 0,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  border-inline: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.screen-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--space-2);
+}
+
+.mono-card {
+  background-color: var(--surface);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.04) 0,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 12px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: var(--space-3);
+  width: min(448px, calc(100vw - 24px));
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-glass);
+  backdrop-filter: blur(8px);
+  padding: var(--space-2);
+}
+
+.bottom-nav a {
+  text-align: center;
+  padding: var(--space-2) var(--space-1);
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bottom-nav a[data-active="true"] {
+  color: var(--foreground);
+  background: var(--surface-elevated);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.glyph-line {
+  position: relative;
+  height: 1px;
+  margin: 8px 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.2) 0,
+    rgba(255, 255, 255, 0.2) 6px,
+    transparent 6px,
+    transparent 10px
+  );
+}
+
+.glyph-line::before {
+  content: "";
+  position: absolute;
+  inset: -4px auto auto 16px;
+  width: 5px;
+  height: 5px;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.glyph-line::after {
+  content: "";
+  position: absolute;
+  inset: -4px 16px auto auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.matrix-label {
+  font-family: var(--font-geist-mono), monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
