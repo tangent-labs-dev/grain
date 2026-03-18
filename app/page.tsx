@@ -154,7 +154,7 @@ export default function Home() {
       />
 
       <section className={isEmptyState ? "space-y-4" : "space-y-4"}>
-        <Card className="space-y-3">
+        <Card className="space-y-3 transition-colors duration-200 hover:border-white/15">
           <p className="text-xs uppercase tracking-[0.12em] text-(--muted)">
             This Month
           </p>
@@ -199,7 +199,11 @@ export default function Home() {
           </div>
         </Card>
 
-        <Card className={isEmptyState ? "space-y-3 p-4" : "space-y-3"}>
+        <Card
+          className={`transition-colors duration-200 hover:border-white/15 ${
+            isEmptyState ? "space-y-3 p-4" : "space-y-3"
+          }`}
+        >
           <div className="flex items-center justify-between">
             <p className="text-xs matrix-label text-(--muted)">Budget Focus</p>
             <Link href="/budgets" className="text-xs matrix-label text-foreground">
@@ -241,7 +245,11 @@ export default function Home() {
           )}
         </Card>
 
-        <Card className={isEmptyState ? "p-4" : ""}>
+        <Card
+          className={`transition-colors duration-200 hover:border-white/15 ${
+            isEmptyState ? "p-4" : ""
+          }`}
+        >
           <div className={`${isEmptyState ? "mb-3" : "mb-3"} flex items-center justify-between`}>
             <p className="text-xs uppercase tracking-[0.12em] text-(--muted)">
               Recent Transactions
