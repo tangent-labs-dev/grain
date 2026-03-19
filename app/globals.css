@@ -59,7 +59,10 @@ select {
   min-height: 100vh;
   max-width: 480px;
   margin: 0 auto;
-  padding: var(--space-6) var(--space-4) 84px;
+  padding:
+    var(--space-6)
+    var(--space-4)
+    calc(98px + env(safe-area-inset-bottom, 0px));
   background:
     linear-gradient(180deg, rgba(18, 18, 18, 0.88) 0%, rgba(2, 2, 2, 0.96) 100%),
     repeating-linear-gradient(
@@ -115,17 +118,30 @@ select {
   left: 50%;
   transform: translateX(-50%);
   bottom: var(--space-3);
-  width: min(448px, calc(100vw - 24px));
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  z-index: 40;
+  width: min(464px, calc(100vw - 12px));
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--surface-glass);
   backdrop-filter: blur(8px);
-  padding: var(--space-2);
+  padding: var(--space-2)
+    var(--space-2)
+    calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+  scrollbar-width: none;
+}
+
+.bottom-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .bottom-nav a {
+  flex: 1 0
+    calc((100% - ((var(--tab-count, 6) - 1) * 6px)) / var(--tab-count, 6));
+  min-width: 56px;
   text-align: center;
   padding: var(--space-2) var(--space-1);
   border-radius: var(--radius-sm);
@@ -133,6 +149,15 @@ select {
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--muted);
+  white-space: nowrap;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bottom-nav[data-count="6"] a {
+  font-size: 0.66rem;
+  letter-spacing: 0.05em;
 }
 
 .bottom-nav a[data-active="true"] {
@@ -182,7 +207,10 @@ select {
 
 @media (max-width: 420px) {
   .app-shell {
-    padding: var(--space-5) var(--space-3) 80px;
+    padding:
+      var(--space-5)
+      var(--space-3)
+      calc(92px + env(safe-area-inset-bottom, 0px));
   }
 
   .screen-title {
@@ -200,11 +228,12 @@ select {
 
   .bottom-nav {
     bottom: var(--space-2);
-    width: calc(100vw - 16px);
-    padding: 6px;
+    width: calc(100vw - 8px);
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
   }
 
   .bottom-nav a {
+    min-width: 52px;
     padding: 6px 2px;
     font-size: 0.62rem;
     letter-spacing: 0.05em;

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { Input } from "@/app/components/ui/Input";
+import { Select } from "@/app/components/ui/Select";
 import { SegmentedControl } from "@/app/components/ui/SegmentedControl";
 import type { Category, SplitItem, TransactionType, Wallet } from "@/lib/types";
 import { dateTimeLocalValue } from "@/lib/format";
@@ -203,34 +204,32 @@ export function TransactionForm({
           <span className="mb-2 block text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
             Category
           </span>
-          <select
+          <Select
             value={values.categoryId}
-            onChange={(event) => updateField("categoryId", event.target.value)}
-            className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"
-          >
-            {activeCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+            onChange={(nextValue) => updateField("categoryId", nextValue)}
+            options={activeCategories.map((category) => ({
+              value: category.id,
+              label: category.name,
+            }))}
+            className="text-sm"
+            ariaLabel="Select category"
+          />
         </label>
 
         <label className="block">
           <span className="mb-2 block text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
             Wallet
           </span>
-          <select
+          <Select
             value={values.walletId}
-            onChange={(event) => updateField("walletId", event.target.value)}
-            className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-          >
-            {wallets.map((wallet) => (
-              <option key={wallet.id} value={wallet.id}>
-                {wallet.name}
-              </option>
-            ))}
-          </select>
+            onChange={(nextValue) => updateField("walletId", nextValue)}
+            options={wallets.map((wallet) => ({
+              value: wallet.id,
+              label: wallet.name,
+            }))}
+            className="text-sm"
+            ariaLabel="Select wallet"
+          />
         </label>
 
         <label className="block">
@@ -293,19 +292,18 @@ export function TransactionForm({
                   key={split.id}
                   className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-[minmax(0,1fr)_110px_64px]"
                 >
-                  <select
+                  <Select
                     value={split.categoryId}
-                    onChange={(event) =>
-                      updateSplitLine(split.id, "categoryId", event.target.value)
+                    onChange={(nextValue) =>
+                      updateSplitLine(split.id, "categoryId", nextValue)
                     }
-                    className="rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-2 py-2 text-sm matrix-label"
-                  >
-                    {activeCategories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
+                    options={activeCategories.map((category) => ({
+                      value: category.id,
+                      label: category.name,
+                    }))}
+                    className="text-sm"
+                    ariaLabel="Split category"
+                  />
                   <Input
                     inputMode="decimal"
                     value={split.amount}

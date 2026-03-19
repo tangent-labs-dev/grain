@@ -6,6 +6,7 @@ import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { Input } from "@/app/components/ui/Input";
 import { Modal } from "@/app/components/ui/Modal";
+import { Select } from "@/app/components/ui/Select";
 import {
   deleteBudget,
   getBudgets,
@@ -241,17 +242,16 @@ export default function BudgetsPage() {
             <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
               Category
             </span>
-            <select
+            <Select
               value={categoryId}
-              onChange={(event) => setCategoryId(event.target.value)}
-              className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-            >
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+              onChange={setCategoryId}
+              options={categories.map((category) => ({
+                value: category.id,
+                label: category.name,
+              }))}
+              className="text-sm"
+              ariaLabel="Select budget category"
+            />
           </label>
 
           <label className="block">

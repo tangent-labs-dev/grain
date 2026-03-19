@@ -7,6 +7,7 @@ import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { Input } from "@/app/components/ui/Input";
 import { Modal } from "@/app/components/ui/Modal";
+import { Select } from "@/app/components/ui/Select";
 import {
   addWallet,
   getPreferences,
@@ -180,22 +181,18 @@ export default function WalletsPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Type
               </span>
-              <select
+              <Select
                 value={editingForm.type}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setEditingForm((current) => ({
                     ...current,
-                    type: event.target.value as WalletType,
+                    type: nextValue as WalletType,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {WALLET_TYPE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={WALLET_TYPE_OPTIONS}
+                className="text-sm"
+                ariaLabel="Wallet type"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
@@ -262,22 +259,18 @@ export default function WalletsPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Type
               </span>
-              <select
+              <Select
                 value={form.type}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setForm((current) => ({
                     ...current,
-                    type: event.target.value as WalletType,
+                    type: nextValue as WalletType,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {WALLET_TYPE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={WALLET_TYPE_OPTIONS}
+                className="text-sm"
+                ariaLabel="Wallet type"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">

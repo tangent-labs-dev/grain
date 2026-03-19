@@ -7,6 +7,7 @@ import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { Input } from "@/app/components/ui/Input";
 import { Modal } from "@/app/components/ui/Modal";
+import { Select } from "@/app/components/ui/Select";
 import {
   addRecurringTemplate,
   addTransaction,
@@ -284,19 +285,21 @@ export default function TemplatesPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Type
               </span>
-              <select
+              <Select
                 value={editingForm.type}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setEditingForm((current) => ({
                     ...current,
-                    type: event.target.value as TransactionType,
+                    type: nextValue as TransactionType,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                <option value="expense">Expense</option>
-                <option value="income">Income</option>
-              </select>
+                options={[
+                  { value: "expense", label: "Expense" },
+                  { value: "income", label: "Income" },
+                ]}
+                className="text-sm"
+                ariaLabel="Template type"
+              />
             </label>
           </div>
 
@@ -305,43 +308,41 @@ export default function TemplatesPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Category
               </span>
-              <select
+              <Select
                 value={editingForm.categoryId}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setEditingForm((current) => ({
                     ...current,
-                    categoryId: event.target.value,
+                    categoryId: nextValue,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+                options={categories.map((category) => ({
+                  value: category.id,
+                  label: category.name,
+                }))}
+                className="text-sm"
+                ariaLabel="Template category"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Wallet
               </span>
-              <select
+              <Select
                 value={editingForm.walletId}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setEditingForm((current) => ({
                     ...current,
-                    walletId: event.target.value,
+                    walletId: nextValue,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {wallets.map((wallet) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
+                options={wallets.map((wallet) => ({
+                  value: wallet.id,
+                  label: wallet.name,
+                }))}
+                className="text-sm"
+                ariaLabel="Template wallet"
+              />
             </label>
           </div>
 
@@ -350,19 +351,21 @@ export default function TemplatesPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Frequency
               </span>
-              <select
+              <Select
                 value={editingForm.frequency}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setEditingForm((current) => ({
                     ...current,
-                    frequency: event.target.value as RecurringFrequency,
+                    frequency: nextValue as RecurringFrequency,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
+                options={[
+                  { value: "weekly", label: "Weekly" },
+                  { value: "monthly", label: "Monthly" },
+                ]}
+                className="text-sm"
+                ariaLabel="Template frequency"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
@@ -476,19 +479,21 @@ export default function TemplatesPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Type
               </span>
-              <select
+              <Select
                 value={form.type}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setForm((current) => ({
                     ...current,
-                    type: event.target.value as TransactionType,
+                    type: nextValue as TransactionType,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                <option value="expense">Expense</option>
-                <option value="income">Income</option>
-              </select>
+                options={[
+                  { value: "expense", label: "Expense" },
+                  { value: "income", label: "Income" },
+                ]}
+                className="text-sm"
+                ariaLabel="Template type"
+              />
             </label>
           </div>
 
@@ -497,37 +502,35 @@ export default function TemplatesPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Category
               </span>
-              <select
+              <Select
                 value={form.categoryId}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, categoryId: event.target.value }))
+                onChange={(nextValue) =>
+                  setForm((current) => ({ ...current, categoryId: nextValue }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+                options={categories.map((category) => ({
+                  value: category.id,
+                  label: category.name,
+                }))}
+                className="text-sm"
+                ariaLabel="Template category"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Wallet
               </span>
-              <select
+              <Select
                 value={form.walletId}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, walletId: event.target.value }))
+                onChange={(nextValue) =>
+                  setForm((current) => ({ ...current, walletId: nextValue }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {wallets.map((wallet) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
+                options={wallets.map((wallet) => ({
+                  value: wallet.id,
+                  label: wallet.name,
+                }))}
+                className="text-sm"
+                ariaLabel="Template wallet"
+              />
             </label>
           </div>
 
@@ -536,19 +539,21 @@ export default function TemplatesPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Frequency
               </span>
-              <select
+              <Select
                 value={form.frequency}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setForm((current) => ({
                     ...current,
-                    frequency: event.target.value as RecurringFrequency,
+                    frequency: nextValue as RecurringFrequency,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
+                options={[
+                  { value: "weekly", label: "Weekly" },
+                  { value: "monthly", label: "Monthly" },
+                ]}
+                className="text-sm"
+                ariaLabel="Template frequency"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
