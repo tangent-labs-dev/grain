@@ -27,3 +27,25 @@ Grain is a local finance tracker PWA
 npm install
 npm run dev
 ```
+
+## Deploy To Cloudflare Workers
+
+1. Authenticate Wrangler once:
+
+```bash
+npx wrangler login
+```
+
+2. Set the Worker name in `wrangler.toml` (`name = "grain"`).
+
+3. Deploy:
+
+```bash
+npm run deploy
+```
+
+4. (Optional) Preview in the Workers runtime locally:
+
+```bash
+npm run preview
+```
