@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppShell } from "@/app/components/AppShell";
 import { BottomNav } from "@/app/components/BottomNav";
+import { OnboardingTour } from "@/app/components/onboarding/OnboardingTour";
 import { ServiceWorkerRegistration } from "@/app/components/pwa/ServiceWorkerRegistration";
 import "./globals.css";
 
@@ -37,6 +38,7 @@ export default function RootLayout({
       >
         <ServiceWorkerRegistration />
         <AppShell>{children}</AppShell>
+        <OnboardingTour />
         <BottomNav />
       </body>
     </html>

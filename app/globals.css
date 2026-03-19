@@ -121,6 +121,8 @@ select {
   z-index: 40;
   width: min(464px, calc(100vw - 12px));
   display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: 6px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -141,6 +143,9 @@ select {
 .bottom-nav a {
   flex: 1 0
     calc((100% - ((var(--tab-count, 6) - 1) * 6px)) / var(--tab-count, 6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 56px;
   text-align: center;
   padding: var(--space-2) var(--space-1);
@@ -150,7 +155,8 @@ select {
   text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
-  line-height: 1.15;
+  line-height: 1;
+  word-break: keep-all;
   overflow: hidden;
   text-overflow: ellipsis;
 }
