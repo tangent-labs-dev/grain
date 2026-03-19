@@ -15,24 +15,42 @@ const APP_SHELL = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()),
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+
+      // Keep SW install reliable even if one route fails to precache.
+      await Promise.all(
+        APP_SHELL.map(async (path) => {
+          try {
+            const response = await fetch(path, { cache: "no-store" });
+            if (!response.ok) return;
+            await cache.put(path, response);
+          } catch {
+            // Ignore individual failures during install.
+          }
+        }),
+      );
+
+      await self.skipWaiting();
+    })(),
   );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
             return caches.delete(key);
           }
           return Promise.resolve();
         }),
-      ),
-    ),
+      );
+      await self.clients.claim();
+    })(),
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AppShell } from "@/app/components/AppShell";
 import { BottomNav } from "@/app/components/BottomNav";
 import { OnboardingTour } from "@/app/components/onboarding/OnboardingTour";
+import { InstallPrompt } from "@/app/components/pwa/InstallPrompt";
 import { ServiceWorkerRegistration } from "@/app/components/pwa/ServiceWorkerRegistration";
 import "./globals.css";
 
@@ -37,6 +38,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ServiceWorkerRegistration />
+        <InstallPrompt />
         <AppShell>{children}</AppShell>
         <OnboardingTour />
         <BottomNav />
