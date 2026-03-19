@@ -61,7 +61,7 @@ export type RecurringTemplate = {
   updatedAt: string;
 };
 
-export type WalletType = "cash" | "bank" | "card" | "savings";
+export type WalletType = "cash" | "bank" | "card";
 
 export type Wallet = {
   id: string;

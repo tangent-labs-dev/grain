@@ -24,6 +24,12 @@ import type {
   WalletType,
 } from "@/lib/types";
 
+const WALLET_TYPE_OPTIONS: Array<{ value: WalletType; label: string }> = [
+  { value: "cash", label: "Cash" },
+  { value: "bank", label: "Bank" },
+  { value: "card", label: "Card" },
+];
+
 export default function WalletsPage() {
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -35,7 +41,7 @@ export default function WalletsPage() {
   });
   const [form, setForm] = useState({
     name: "",
-    type: "cash" as WalletType,
+    type: WALLET_TYPE_OPTIONS[0].value,
     startingBalance: "",
   });
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -73,6 +79,13 @@ export default function WalletsPage() {
     () => computeWalletBalances(wallets, transactions, transfers),
     [wallets, transactions, transfers],
   );
+  const walletTypeLabelMap = useMemo(
+    () =>
+      new Map(
+        WALLET_TYPE_OPTIONS.map((option) => [option.value, option.label]),
+      ),
+    [],
+  );
   const fmt = (value: number) =>
     formatCurrency(value, preferences.locale, preferences.currency);
 
@@ -102,7 +115,7 @@ export default function WalletsPage() {
               <div className="min-w-0">
                 <p className="text-sm matrix-label">{wallet.name}</p>
                 <p className="text-xs matrix-label text-[var(--muted)]">
-                  {wallet.type}
+                  {walletTypeLabelMap.get(wallet.type) ?? wallet.type}
                 </p>
               </div>
               <p className="text-sm matrix-label">
@@ -147,10 +160,11 @@ export default function WalletsPage() {
                 }
                 className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
               >
-                <option value="cash">Cash</option>
-                <option value="bank">Bank</option>
-                <option value="card">Card</option>
-                <option value="savings">Savings</option>
+                {WALLET_TYPE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="block">
@@ -182,7 +196,11 @@ export default function WalletsPage() {
                   ? startingBalance
                   : 0,
               });
-              setForm({ name: "", type: "cash", startingBalance: "" });
+              setForm({
+                name: "",
+                type: WALLET_TYPE_OPTIONS[0].value,
+                startingBalance: "",
+              });
               setShowCreateModal(false);
               await load();
             }}
