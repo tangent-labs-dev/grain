@@ -48,6 +48,17 @@ export default function TemplatesPage() {
     note: "",
   });
   const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
+  const [editingForm, setEditingForm] = useState({
+    name: "",
+    amount: "",
+    type: "expense" as TransactionType,
+    categoryId: "",
+    walletId: "",
+    frequency: "monthly" as RecurringFrequency,
+    nextRunAt: new Date().toISOString().slice(0, 10),
+    note: "",
+  });
 
   async function load() {
     const [templateRows, categoryRows, walletRows, prefs] = await Promise.all([
@@ -159,6 +170,25 @@ export default function TemplatesPage() {
                   Use
                 </Button>
                 <Button
+                  variant="ghost"
+                  className="px-2 py-1 text-[0.64rem]"
+                  onClick={() => {
+                    setEditingTemplateId(template.id);
+                    setEditingForm({
+                      name: template.name,
+                      amount: String(template.amount),
+                      type: template.type,
+                      categoryId: template.categoryId,
+                      walletId: template.walletId,
+                      frequency: template.frequency,
+                      nextRunAt: template.nextRunAt.slice(0, 10),
+                      note: template.note ?? "",
+                    });
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
                   variant={template.active ? "secondary" : "primary"}
                   className="px-2 py-1 text-[0.64rem]"
                   onClick={async () => {
@@ -203,6 +233,210 @@ export default function TemplatesPage() {
           </Card>
         ) : null}
       </section>
+
+      <Modal
+        open={Boolean(editingTemplateId)}
+        onClose={() => {
+          setEditingTemplateId(null);
+          setEditingForm({
+            name: "",
+            amount: "",
+            type: "expense",
+            categoryId: "",
+            walletId: "",
+            frequency: "monthly",
+            nextRunAt: new Date().toISOString().slice(0, 10),
+            note: "",
+          });
+        }}
+        title="Edit Recurring Template"
+        subtitle="Update template details"
+      >
+        <div className="space-y-3">
+          <label className="block">
+            <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+              Name
+            </span>
+            <Input
+              value={editingForm.name}
+              onChange={(event) =>
+                setEditingForm((current) => ({ ...current, name: event.target.value }))
+              }
+              placeholder="Rent / Salary"
+            />
+          </label>
+
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Amount
+              </span>
+              <Input
+                inputMode="decimal"
+                value={editingForm.amount}
+                onChange={(event) =>
+                  setEditingForm((current) => ({ ...current, amount: event.target.value }))
+                }
+                placeholder="0.00"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Type
+              </span>
+              <select
+                value={editingForm.type}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    type: event.target.value as TransactionType,
+                  }))
+                }
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
+              >
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Category
+              </span>
+              <select
+                value={editingForm.categoryId}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    categoryId: event.target.value,
+                  }))
+                }
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
+              >
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Wallet
+              </span>
+              <select
+                value={editingForm.walletId}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    walletId: event.target.value,
+                  }))
+                }
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
+              >
+                {wallets.map((wallet) => (
+                  <option key={wallet.id} value={wallet.id}>
+                    {wallet.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Frequency
+              </span>
+              <select
+                value={editingForm.frequency}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    frequency: event.target.value as RecurringFrequency,
+                  }))
+                }
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
+              >
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Next Run
+              </span>
+              <Input
+                type="date"
+                value={editingForm.nextRunAt}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    nextRunAt: event.target.value,
+                  }))
+                }
+              />
+            </label>
+          </div>
+
+          <label className="block">
+            <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+              Note
+            </span>
+            <Input
+              value={editingForm.note}
+              onChange={(event) =>
+                setEditingForm((current) => ({ ...current, note: event.target.value }))
+              }
+              placeholder="Optional note"
+            />
+          </label>
+
+          <Button
+            className="w-full"
+            onClick={async () => {
+              if (!editingTemplateId) return;
+              const parsedAmount = Number(editingForm.amount);
+              if (
+                !editingForm.name.trim() ||
+                !Number.isFinite(parsedAmount) ||
+                parsedAmount <= 0 ||
+                !editingForm.categoryId ||
+                !editingForm.walletId ||
+                !editingForm.nextRunAt
+              ) {
+                return;
+              }
+              await updateRecurringTemplate(editingTemplateId, {
+                name: editingForm.name,
+                amount: parsedAmount,
+                type: editingForm.type,
+                categoryId: editingForm.categoryId,
+                walletId: editingForm.walletId,
+                frequency: editingForm.frequency,
+                nextRunAt: new Date(`${editingForm.nextRunAt}T00:00:00`).toISOString(),
+                note: editingForm.note.trim() || undefined,
+              });
+              setEditingTemplateId(null);
+              setEditingForm({
+                name: "",
+                amount: "",
+                type: "expense",
+                categoryId: "",
+                walletId: "",
+                frequency: "monthly",
+                nextRunAt: new Date().toISOString().slice(0, 10),
+                note: "",
+              });
+              await load();
+            }}
+          >
+            Save Changes
+          </Button>
+        </div>
+      </Modal>
 
       <Modal
         open={showTemplateModal}

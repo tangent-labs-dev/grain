@@ -13,6 +13,7 @@ import {
   getTransactions,
   getTransfers,
   getWallets,
+  updateWallet,
 } from "@/lib/db";
 import { computeWalletBalances } from "@/lib/finance";
 import { formatCurrency } from "@/lib/format";
@@ -45,6 +46,12 @@ export default function WalletsPage() {
     startingBalance: "",
   });
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingWalletId, setEditingWalletId] = useState<string | null>(null);
+  const [editingForm, setEditingForm] = useState({
+    name: "",
+    type: WALLET_TYPE_OPTIONS[0].value,
+    startingBalance: "",
+  });
 
   async function load() {
     const [walletRows, txRows, transferRows, prefs] = await Promise.all([
@@ -118,13 +125,118 @@ export default function WalletsPage() {
                   {walletTypeLabelMap.get(wallet.type) ?? wallet.type}
                 </p>
               </div>
-              <p className="text-sm matrix-label">
-                {fmt(balances.get(wallet.id) ?? wallet.startingBalance)}
-              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-sm matrix-label">
+                  {fmt(balances.get(wallet.id) ?? wallet.startingBalance)}
+                </p>
+                <Button
+                  variant="ghost"
+                  className="px-2 py-1 text-[0.64rem]"
+                  onClick={() => {
+                    setEditingWalletId(wallet.id);
+                    setEditingForm({
+                      name: wallet.name,
+                      type: wallet.type,
+                      startingBalance: String(wallet.startingBalance),
+                    });
+                  }}
+                >
+                  Edit
+                </Button>
+              </div>
             </div>
           </Card>
         ))}
       </section>
+
+      <Modal
+        open={Boolean(editingWalletId)}
+        onClose={() => {
+          setEditingWalletId(null);
+          setEditingForm({
+            name: "",
+            type: WALLET_TYPE_OPTIONS[0].value,
+            startingBalance: "",
+          });
+        }}
+        title="Edit Wallet"
+        subtitle="Update account details"
+      >
+        <div className="space-y-3">
+          <label className="block">
+            <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+              Wallet Name
+            </span>
+            <Input
+              value={editingForm.name}
+              onChange={(event) =>
+                setEditingForm((current) => ({ ...current, name: event.target.value }))
+              }
+              placeholder="Cash / Debit / Credit"
+            />
+          </label>
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Type
+              </span>
+              <select
+                value={editingForm.type}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    type: event.target.value as WalletType,
+                  }))
+                }
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
+              >
+                {WALLET_TYPE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Starting Balance
+              </span>
+              <Input
+                inputMode="decimal"
+                value={editingForm.startingBalance}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    startingBalance: event.target.value,
+                  }))
+                }
+                placeholder="0.00"
+              />
+            </label>
+          </div>
+          <Button
+            className="w-full"
+            onClick={async () => {
+              if (!editingWalletId || !editingForm.name.trim()) return;
+              const parsedBalance = Number(editingForm.startingBalance || "0");
+              await updateWallet(editingWalletId, {
+                name: editingForm.name,
+                type: editingForm.type,
+                startingBalance: Number.isFinite(parsedBalance) ? parsedBalance : 0,
+              });
+              setEditingWalletId(null);
+              setEditingForm({
+                name: "",
+                type: WALLET_TYPE_OPTIONS[0].value,
+                startingBalance: "",
+              });
+              await load();
+            }}
+          >
+            Save Changes
+          </Button>
+        </div>
+      </Modal>
 
       <Modal
         open={showCreateModal}
