@@ -49,3 +49,12 @@ npm run deploy
 ```bash
 npm run preview
 ```
+
+### Cloudflare Workers Builds (Git Integration)
+
+If deploying via Cloudflare dashboard build pipeline (the `/opt/buildhome/...` logs), set:
+
+- Build command: `npm run build:cf`
+- Deploy command: `npm run deploy:cf`
+
+This ensures OpenNext artifacts are generated before deploy.
