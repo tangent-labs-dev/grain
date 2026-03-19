@@ -285,6 +285,7 @@ export default function Home() {
             </div>
           )}
         </Card>
+
       </section>
     </main>
   );

@@ -7,15 +7,20 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/transactions", label: "History" },
   { href: "/insights", label: "Insights" },
+  { href: "/planning", label: "Plans" },
   { href: "/wallets", label: "Wallets" },
-  { href: "/settings", label: "Control" },
+  { href: "/settings", label: "Settings" },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="bottom-nav" aria-label="Primary">
+    <nav
+      className="bottom-nav"
+      aria-label="Primary"
+      style={{ gridTemplateColumns: `repeat(${links.length}, minmax(0, 1fr))` }}
+    >
       {links.map((link) => {
         const active =
           pathname === link.href ||

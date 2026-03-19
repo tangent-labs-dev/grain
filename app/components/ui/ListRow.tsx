@@ -14,14 +14,14 @@ export function ListRow({ title, subtitle, trailing, onClick }: ListRowProps) {
   if (onClick) {
     return (
       <button type="button" onClick={onClick} className={rowClass}>
-        <div className="flex items-center justify-between gap-4">
-          <div>
+        <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+          <div className="min-w-0">
             <p className="matrix-label text-sm">{title}</p>
             {subtitle ? (
               <p className="mt-1 text-xs matrix-label text-(--muted)">{subtitle}</p>
             ) : null}
           </div>
-          {trailing}
+          {trailing ? <div className="w-full min-[420px]:w-auto">{trailing}</div> : null}
         </div>
       </button>
     );
@@ -29,14 +29,14 @@ export function ListRow({ title, subtitle, trailing, onClick }: ListRowProps) {
 
   return (
     <div className={rowClass}>
-      <div className="flex items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+        <div className="min-w-0">
           <p className="matrix-label text-sm">{title}</p>
           {subtitle ? (
             <p className="mt-1 text-xs matrix-label text-(--muted)">{subtitle}</p>
           ) : null}
         </div>
-        {trailing}
+        {trailing ? <div className="w-full min-[420px]:w-auto">{trailing}</div> : null}
       </div>
     </div>
   );

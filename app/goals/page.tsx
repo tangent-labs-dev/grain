@@ -18,6 +18,14 @@ import { goalProgress } from "@/lib/finance";
 import { formatCurrency } from "@/lib/format";
 import type { Goal, Preferences, Wallet } from "@/lib/types";
 
+const EMPTY_GOAL_FORM = {
+  name: "",
+  targetAmount: "",
+  currentAmount: "",
+  walletId: "",
+  deadline: "",
+};
+
 export default function GoalsPage() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [wallets, setWallets] = useState<Wallet[]>([]);
@@ -26,16 +34,10 @@ export default function GoalsPage() {
     currency: "USD",
     locale: "en-US",
   });
-  const [form, setForm] = useState({
-    name: "",
-    targetAmount: "",
-    currentAmount: "",
-    walletId: "",
-    deadline: "",
-  });
+  const [form, setForm] = useState(EMPTY_GOAL_FORM);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
-  const [editingGoalAmount, setEditingGoalAmount] = useState("");
+  const [editingForm, setEditingForm] = useState(EMPTY_GOAL_FORM);
 
   async function load() {
     const [goalRows, walletRows, prefs] = await Promise.all([
@@ -97,8 +99,8 @@ export default function GoalsPage() {
           const progress = goalProgress(goal);
           return (
             <Card key={goal.id} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+                <div className="min-w-0">
                   <p className="text-sm matrix-label">{goal.name}</p>
                   <p className="text-xs matrix-label text-[var(--muted)]">
                     {fmt(goal.currentAmount)} / {fmt(goal.targetAmount)}
@@ -109,16 +111,22 @@ export default function GoalsPage() {
                     </p>
                   ) : null}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button
                     variant="ghost"
                     className="px-2 py-1 text-[0.64rem]"
                     onClick={() => {
                       setEditingGoalId(goal.id);
-                      setEditingGoalAmount(String(goal.currentAmount));
+                      setEditingForm({
+                        name: goal.name,
+                        targetAmount: String(goal.targetAmount),
+                        currentAmount: String(goal.currentAmount),
+                        walletId: goal.walletId ?? "",
+                        deadline: goal.deadline ? goal.deadline.slice(0, 10) : "",
+                      });
                     }}
                   >
-                    Update
+                    Edit
                   </Button>
                   <Button
                     variant="danger"
@@ -162,7 +170,7 @@ export default function GoalsPage() {
               placeholder="Emergency fund"
             />
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Target
@@ -196,7 +204,7 @@ export default function GoalsPage() {
               />
             </label>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Wallet (Optional)
@@ -245,13 +253,7 @@ export default function GoalsPage() {
                   ? new Date(`${form.deadline}T00:00:00`).toISOString()
                   : undefined,
               });
-              setForm({
-                name: "",
-                targetAmount: "",
-                currentAmount: "",
-                walletId: "",
-                deadline: "",
-              });
+              setForm(EMPTY_GOAL_FORM);
               setShowGoalModal(false);
               await load();
             }}
@@ -265,35 +267,126 @@ export default function GoalsPage() {
         open={Boolean(editingGoalId)}
         onClose={() => {
           setEditingGoalId(null);
-          setEditingGoalAmount("");
+          setEditingForm(EMPTY_GOAL_FORM);
         }}
-        title="Update Goal Progress"
+        title="Edit Goal"
       >
         <div className="space-y-3">
           <label className="block">
             <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
-              Current Saved Amount
+              Goal Name
             </span>
             <Input
-              inputMode="decimal"
-              value={editingGoalAmount}
-              onChange={(event) => setEditingGoalAmount(event.target.value)}
-              placeholder="0.00"
+              value={editingForm.name}
+              onChange={(event) =>
+                setEditingForm((current) => ({ ...current, name: event.target.value }))
+              }
+              placeholder="Emergency fund"
             />
           </label>
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Target
+              </span>
+              <Input
+                inputMode="decimal"
+                value={editingForm.targetAmount}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    targetAmount: event.target.value,
+                  }))
+                }
+                placeholder="1000"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Current
+              </span>
+              <Input
+                inputMode="decimal"
+                value={editingForm.currentAmount}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    currentAmount: event.target.value,
+                  }))
+                }
+                placeholder="0"
+              />
+            </label>
+          </div>
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Wallet (Optional)
+              </span>
+              <select
+                value={editingForm.walletId}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    walletId: event.target.value,
+                  }))
+                }
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
+              >
+                <option value="">None</option>
+                {wallets.map((wallet) => (
+                  <option key={wallet.id} value={wallet.id}>
+                    {wallet.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+                Deadline (Optional)
+              </span>
+              <Input
+                type="date"
+                value={editingForm.deadline}
+                onChange={(event) =>
+                  setEditingForm((current) => ({
+                    ...current,
+                    deadline: event.target.value,
+                  }))
+                }
+              />
+            </label>
+          </div>
           <Button
             className="w-full"
             onClick={async () => {
               if (!editingGoalId) return;
-              const parsed = Number(editingGoalAmount);
-              if (!Number.isFinite(parsed) || parsed < 0) return;
-              await updateGoal(editingGoalId, { currentAmount: parsed });
+              const target = Number(editingForm.targetAmount);
+              const current = Number(editingForm.currentAmount);
+              if (
+                !editingForm.name.trim() ||
+                !Number.isFinite(target) ||
+                target <= 0 ||
+                !Number.isFinite(current) ||
+                current < 0
+              ) {
+                return;
+              }
+              await updateGoal(editingGoalId, {
+                name: editingForm.name,
+                targetAmount: target,
+                currentAmount: current,
+                walletId: editingForm.walletId || undefined,
+                deadline: editingForm.deadline
+                  ? new Date(`${editingForm.deadline}T00:00:00`).toISOString()
+                  : undefined,
+              });
               setEditingGoalId(null);
-              setEditingGoalAmount("");
+              setEditingForm(EMPTY_GOAL_FORM);
               await load();
             }}
           >
-            Save Progress
+            Save Changes
           </Button>
         </div>
       </Modal>

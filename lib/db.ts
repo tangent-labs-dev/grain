@@ -515,6 +515,28 @@ export async function addTransfer(input: NewTransfer) {
   return row;
 }
 
+export async function updateTransfer(
+  id: string,
+  input: Partial<Omit<Transfer, "id" | "createdAt" | "updatedAt">>,
+) {
+  const db = await getDb();
+  const existing = await db.get("transfers", id);
+  if (!existing) return null;
+  const next: Transfer = {
+    ...existing,
+    ...input,
+    note: "note" in input ? input.note?.trim() : existing.note,
+    updatedAt: new Date().toISOString(),
+  };
+  await db.put("transfers", next);
+  return next;
+}
+
+export async function deleteTransfer(id: string) {
+  const db = await getDb();
+  await db.delete("transfers", id);
+}
+
 export async function getGoals() {
   const db = await getDb();
   const rows = await db.getAll("goals");

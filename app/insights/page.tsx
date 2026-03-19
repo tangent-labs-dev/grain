@@ -157,7 +157,7 @@ function CategoryBars({
         const ratio = item.total / total;
         return (
           <div key={item.categoryId} className="space-y-1">
-            <div className="flex items-center justify-between text-xs matrix-label">
+            <div className="flex flex-col items-start gap-1 text-xs matrix-label min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
               <span>{item.label}</span>
               <span className="text-[var(--muted)]">
                 {formatter(item.total)} ({Math.round(ratio * 100)}%)

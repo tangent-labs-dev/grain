@@ -32,6 +32,8 @@ export default function BudgetsPage() {
   const [limitAmount, setLimitAmount] = useState("");
   const [loading, setLoading] = useState(true);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
+  const [editingLimitAmount, setEditingLimitAmount] = useState("");
 
   async function load(targetMonth = month) {
     const [categoryRows, txRows, budgetRows, prefs] = await Promise.all([
@@ -80,6 +82,10 @@ export default function BudgetsPage() {
 
   const fmt = (value: number) =>
     formatCurrency(value, preferences.locale, preferences.currency);
+  const categoryLabelMap = useMemo(
+    () => new Map(categories.map((category) => [category.id, category.name])),
+    [categories],
+  );
 
   return (
     <main>
@@ -97,18 +103,34 @@ export default function BudgetsPage() {
         {loading ? <p className="muted text-sm">Loading budgets...</p> : null}
         {progress.map((item) => (
           <Card key={item.id} className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
               <p className="text-sm matrix-label">{item.categoryName}</p>
-              <Button
-                variant="danger"
-                className="px-2 py-1 text-[0.64rem]"
-                onClick={async () => {
-                  await deleteBudget(item.id);
-                  await load(month);
-                }}
-              >
-                Remove
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="ghost"
+                  className="px-2 py-1 text-[0.64rem]"
+                  onClick={() => {
+                    const budget = budgets.find((row) => row.id === item.id);
+                    if (!budget) return;
+                    setEditingBudget(budget);
+                    setEditingLimitAmount(String(budget.limitAmount));
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="danger"
+                  className="px-2 py-1 text-[0.64rem]"
+                  onClick={async () => {
+                    const ok = window.confirm("Delete this budget permanently?");
+                    if (!ok) return;
+                    await deleteBudget(item.id);
+                    await load(month);
+                  }}
+                >
+                  Remove
+                </Button>
+              </div>
             </div>
             <p className="text-xs matrix-label text-[var(--muted)]">
               {fmt(item.spent)} / {fmt(item.limitAmount)}
@@ -132,6 +154,70 @@ export default function BudgetsPage() {
           </Card>
         ) : null}
       </section>
+
+      <Modal
+        open={Boolean(editingBudget)}
+        onClose={() => {
+          setEditingBudget(null);
+          setEditingLimitAmount("");
+        }}
+        title="Edit Budget"
+        subtitle="Update monthly limit"
+      >
+        <div className="space-y-3">
+          <label className="block">
+            <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+              Month
+            </span>
+            <Input type="month" value={editingBudget?.month ?? ""} readOnly />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+              Category
+            </span>
+            <Input
+              value={
+                editingBudget
+                  ? (categoryLabelMap.get(editingBudget.categoryId) ?? "Unknown")
+                  : ""
+              }
+              readOnly
+            />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
+              Limit Amount
+            </span>
+            <Input
+              inputMode="decimal"
+              value={editingLimitAmount}
+              onChange={(event) => setEditingLimitAmount(event.target.value)}
+              placeholder="0.00"
+            />
+          </label>
+
+          <Button
+            className="w-full"
+            onClick={async () => {
+              if (!editingBudget) return;
+              const parsed = Number(editingLimitAmount);
+              if (!Number.isFinite(parsed) || parsed <= 0) return;
+              await upsertBudget({
+                month: editingBudget.month,
+                categoryId: editingBudget.categoryId,
+                limitAmount: parsed,
+              });
+              setEditingBudget(null);
+              setEditingLimitAmount("");
+              await load(month);
+            }}
+          >
+            Save Changes
+          </Button>
+        </div>
+      </Modal>
 
       <Modal
         open={showBudgetModal}
