@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/app/components/PageHeader";
 import { Button } from "@/app/components/ui/Button";
@@ -49,6 +50,20 @@ export default function SettingsPage() {
           >
             Edit Preferences
           </Button>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
+            Categories
+          </p>
+          <p className="text-sm muted">
+            Add, edit, archive, and remove custom spending categories.
+          </p>
+          <Link href="/categories">
+            <Button variant="secondary" className="w-full">
+              Manage Categories
+            </Button>
+          </Link>
         </Card>
 
         <Card className="space-y-3">

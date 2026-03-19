@@ -6,6 +6,7 @@ import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { Input } from "@/app/components/ui/Input";
 import { Modal } from "@/app/components/ui/Modal";
+import { Select } from "@/app/components/ui/Select";
 import {
   addTransfer,
   deleteTransfer,
@@ -172,43 +173,41 @@ export default function TransfersPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 From
               </span>
-              <select
+              <Select
                 value={editingForm.fromWalletId}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setEditingForm((current) => ({
                     ...current,
-                    fromWalletId: event.target.value,
+                    fromWalletId: nextValue,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {wallets.map((wallet) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
+                options={wallets.map((wallet) => ({
+                  value: wallet.id,
+                  label: wallet.name,
+                }))}
+                className="text-sm"
+                ariaLabel="From wallet"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 To
               </span>
-              <select
+              <Select
                 value={editingForm.toWalletId}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setEditingForm((current) => ({
                     ...current,
-                    toWalletId: event.target.value,
+                    toWalletId: nextValue,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {wallets.map((wallet) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
+                options={wallets.map((wallet) => ({
+                  value: wallet.id,
+                  label: wallet.name,
+                }))}
+                className="text-sm"
+                ariaLabel="To wallet"
+              />
             </label>
           </div>
 
@@ -288,40 +287,38 @@ export default function TransfersPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 From
               </span>
-              <select
+              <Select
                 value={form.fromWalletId}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setForm((current) => ({
                     ...current,
-                    fromWalletId: event.target.value,
+                    fromWalletId: nextValue,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {wallets.map((wallet) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
+                options={wallets.map((wallet) => ({
+                  value: wallet.id,
+                  label: wallet.name,
+                }))}
+                className="text-sm"
+                ariaLabel="From wallet"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 To
               </span>
-              <select
+              <Select
                 value={form.toWalletId}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, toWalletId: event.target.value }))
+                onChange={(nextValue) =>
+                  setForm((current) => ({ ...current, toWalletId: nextValue }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                {wallets.map((wallet) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
+                options={wallets.map((wallet) => ({
+                  value: wallet.id,
+                  label: wallet.name,
+                }))}
+                className="text-sm"
+                ariaLabel="To wallet"
+              />
             </label>
           </div>
 

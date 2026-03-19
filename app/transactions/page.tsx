@@ -8,6 +8,7 @@ import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { Input } from "@/app/components/ui/Input";
 import { Modal } from "@/app/components/ui/Modal";
+import { Select } from "@/app/components/ui/Select";
 import { SegmentedControl } from "@/app/components/ui/SegmentedControl";
 import {
   deleteTransaction,
@@ -234,38 +235,40 @@ export default function TransactionsPage() {
             <span className="mb-2 block text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
               Category
             </span>
-            <select
+            <Select
               value={categoryFilter}
-              onChange={(event) => setCategoryFilter(event.target.value)}
-              className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"
-            >
-              <option value="all">All Categories</option>
-              {categories
-                .filter((item) => !item.archived)
-                .map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-            </select>
+              onChange={setCategoryFilter}
+              options={[
+                { value: "all", label: "All Categories" },
+                ...categories
+                  .filter((item) => !item.archived)
+                  .map((category) => ({
+                    value: category.id,
+                    label: category.name,
+                  })),
+              ]}
+              className="text-sm"
+              ariaLabel="Filter by category"
+            />
           </label>
 
           <label className="block">
             <span className="mb-2 block text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
               Wallet
             </span>
-            <select
+            <Select
               value={walletFilter}
-              onChange={(event) => setWalletFilter(event.target.value)}
-              className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"
-            >
-              <option value="all">All Wallets</option>
-              {wallets.map((wallet) => (
-                <option key={wallet.id} value={wallet.id}>
-                  {wallet.name}
-                </option>
-              ))}
-            </select>
+              onChange={setWalletFilter}
+              options={[
+                { value: "all", label: "All Wallets" },
+                ...wallets.map((wallet) => ({
+                  value: wallet.id,
+                  label: wallet.name,
+                })),
+              ]}
+              className="text-sm"
+              ariaLabel="Filter by wallet"
+            />
           </label>
 
           <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">

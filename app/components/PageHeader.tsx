@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 
 export function PageHeader({
   title,
-  subtitle,
   actions,
   showDivider = false,
 }: {
@@ -13,7 +12,6 @@ export function PageHeader({
 }) {
   return (
     <header className="mb-5">
-      <p className="screen-title">{subtitle ?? "Grain Finance"}</p>
       {showDivider ? <div className="glyph-line" /> : null}
       <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-end min-[420px]:justify-between">
         <h1 className="matrix-label max-w-full text-[clamp(1.65rem,8vw,2rem)] leading-none font-semibold">

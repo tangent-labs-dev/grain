@@ -6,6 +6,7 @@ import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { Input } from "@/app/components/ui/Input";
 import { Modal } from "@/app/components/ui/Modal";
+import { Select } from "@/app/components/ui/Select";
 import {
   addGoal,
   deleteGoal,
@@ -209,20 +210,21 @@ export default function GoalsPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Wallet (Optional)
               </span>
-              <select
+              <Select
                 value={form.walletId}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, walletId: event.target.value }))
+                onChange={(nextValue) =>
+                  setForm((current) => ({ ...current, walletId: nextValue }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                <option value="">None</option>
-                {wallets.map((wallet) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { value: "", label: "None" },
+                  ...wallets.map((wallet) => ({
+                    value: wallet.id,
+                    label: wallet.name,
+                  })),
+                ]}
+                className="text-sm"
+                ariaLabel="Goal wallet"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
@@ -323,23 +325,24 @@ export default function GoalsPage() {
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Wallet (Optional)
               </span>
-              <select
+              <Select
                 value={editingForm.walletId}
-                onChange={(event) =>
+                onChange={(nextValue) =>
                   setEditingForm((current) => ({
                     ...current,
-                    walletId: event.target.value,
+                    walletId: nextValue,
                   }))
                 }
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm matrix-label"
-              >
-                <option value="">None</option>
-                {wallets.map((wallet) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { value: "", label: "None" },
+                  ...wallets.map((wallet) => ({
+                    value: wallet.id,
+                    label: wallet.name,
+                  })),
+                ]}
+                className="text-sm"
+                ariaLabel="Goal wallet"
+              />
             </label>
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">

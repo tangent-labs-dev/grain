@@ -42,6 +42,11 @@ type UpdateCategory = {
   archived?: boolean;
 };
 
+type RemoveCategoryInput = {
+  id: string;
+  replacementCategoryId: string;
+};
+
 type BudgetInput = {
   month: string;
   categoryId: string;
@@ -314,6 +319,108 @@ export async function updateCategory(input: UpdateCategory) {
   };
   await db.put("categories", row);
   return row;
+}
+
+export async function removeCategory(input: RemoveCategoryInput) {
+  if (input.id === input.replacementCategoryId) {
+    throw new Error("Replacement category must be different.");
+  }
+
+  const db = await getDb();
+  const [existing, replacement, categoryCount] = await Promise.all([
+    db.get("categories", input.id),
+    db.get("categories", input.replacementCategoryId),
+    db.count("categories"),
+  ]);
+  if (!existing) return null;
+  if (!replacement) {
+    throw new Error("Replacement category not found.");
+  }
+  if (categoryCount <= 1) {
+    throw new Error("At least one category must remain.");
+  }
+
+  const now = new Date().toISOString();
+  const tx = db.transaction(
+    ["categories", "transactions", "budgets", "recurringTemplates"],
+    "readwrite",
+  );
+
+  const transactionStore = tx.objectStore("transactions");
+  const transactionRows = await transactionStore.getAll();
+  let updatedTransactions = 0;
+  for (const row of transactionRows) {
+    const splitChanged =
+      row.splits?.some((split) => split.categoryId === input.id) ?? false;
+    const topLevelChanged = row.categoryId === input.id;
+    if (!splitChanged && !topLevelChanged) continue;
+
+    await transactionStore.put({
+      ...row,
+      categoryId: topLevelChanged ? input.replacementCategoryId : row.categoryId,
+      splits: row.splits?.map((split) =>
+        split.categoryId === input.id
+          ? { ...split, categoryId: input.replacementCategoryId }
+          : split,
+      ),
+      updatedAt: now,
+    });
+    updatedTransactions += 1;
+  }
+
+  const recurringStore = tx.objectStore("recurringTemplates");
+  const recurringRows = await recurringStore.getAll();
+  let updatedRecurringTemplates = 0;
+  for (const row of recurringRows) {
+    if (row.categoryId !== input.id) continue;
+    await recurringStore.put({
+      ...row,
+      categoryId: input.replacementCategoryId,
+      updatedAt: now,
+    });
+    updatedRecurringTemplates += 1;
+  }
+
+  const budgetStore = tx.objectStore("budgets");
+  const budgetRows = await budgetStore.getAll();
+  let movedBudgets = 0;
+  const mergedBudgets = new Map<string, Budget>();
+  for (const row of budgetRows) {
+    const nextCategoryId =
+      row.categoryId === input.id ? input.replacementCategoryId : row.categoryId;
+    if (row.categoryId === input.id) movedBudgets += 1;
+    const mergeKey = `${row.month}::${nextCategoryId}`;
+    const existingBudget = mergedBudgets.get(mergeKey);
+    if (!existingBudget) {
+      mergedBudgets.set(mergeKey, {
+        ...row,
+        categoryId: nextCategoryId,
+        updatedAt: row.categoryId === input.id ? now : row.updatedAt,
+      });
+      continue;
+    }
+
+    mergedBudgets.set(mergeKey, {
+      ...existingBudget,
+      limitAmount: existingBudget.limitAmount + row.limitAmount,
+      updatedAt: now,
+    });
+  }
+  await budgetStore.clear();
+  for (const row of mergedBudgets.values()) {
+    await budgetStore.put(row);
+  }
+
+  await tx.objectStore("categories").delete(input.id);
+  await tx.done;
+
+  return {
+    removedCategoryId: input.id,
+    replacementCategoryId: input.replacementCategoryId,
+    updatedTransactions,
+    updatedRecurringTemplates,
+    movedBudgets,
+  };
 }
 
 export async function getPreferences() {
