@@ -82,7 +82,7 @@ export default function WalletsPage() {
         title="Wallets"
         subtitle="Accounts"
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button className="text-xs" onClick={() => setShowCreateModal(true)}>
               Add
             </Button>
@@ -98,8 +98,8 @@ export default function WalletsPage() {
       <section className="mt-4 space-y-2">
         {wallets.map((wallet) => (
           <Card key={wallet.id}>
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+              <div className="min-w-0">
                 <p className="text-sm matrix-label">{wallet.name}</p>
                 <p className="text-xs matrix-label text-[var(--muted)]">
                   {wallet.type}
@@ -132,7 +132,7 @@ export default function WalletsPage() {
               placeholder="Cash / Debit / Credit"
             />
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Type

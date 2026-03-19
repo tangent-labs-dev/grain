@@ -118,7 +118,7 @@ export default function TemplatesPage() {
         title="Recurring"
         subtitle="Templates"
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button className="text-xs" onClick={() => setShowTemplateModal(true)}>
               Add
             </Button>
@@ -139,9 +139,9 @@ export default function TemplatesPage() {
       <section className="mt-4 space-y-2">
         {templates.map((template) => (
           <Card key={template.id} className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
               <p className="text-sm matrix-label">{template.name}</p>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant="ghost"
                   className="px-2 py-1 text-[0.64rem]"
@@ -224,7 +224,7 @@ export default function TemplatesPage() {
             />
           </label>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Amount
@@ -258,7 +258,7 @@ export default function TemplatesPage() {
             </label>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Category
@@ -297,7 +297,7 @@ export default function TemplatesPage() {
             </label>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Frequency

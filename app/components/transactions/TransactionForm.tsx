@@ -256,13 +256,13 @@ export function TransactionForm({
         </label>
 
         <div>
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-2 flex flex-col items-start gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
             <p className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
               Split Transaction
             </p>
             <Button
               variant={values.useSplit ? "primary" : "secondary"}
-              className="px-2 py-1 text-[0.64rem]"
+              className="w-full px-2 py-1 text-[0.64rem] min-[420px]:w-auto"
               onClick={() => {
                 const next = !values.useSplit;
                 setValues((current) => ({
@@ -289,7 +289,10 @@ export function TransactionForm({
           {values.useSplit ? (
             <div className="space-y-2">
               {values.splits.map((split) => (
-                <div key={split.id} className="grid grid-cols-[1fr_110px_64px] gap-2">
+                <div
+                  key={split.id}
+                  className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-[minmax(0,1fr)_110px_64px]"
+                >
                   <select
                     value={split.categoryId}
                     onChange={(event) =>

@@ -28,7 +28,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`matrix-label inline-flex items-center justify-center rounded-none border px-4 py-2 text-[0.72rem] font-medium tracking-[0.18em] disabled:cursor-not-allowed disabled:opacity-50 ${stylesByVariant[variant]} ${className}`}
+      className={`matrix-label inline-flex min-w-0 items-center justify-center rounded-none border px-3 py-2 text-center text-[0.68rem] font-medium leading-none tracking-[0.14em] disabled:cursor-not-allowed disabled:opacity-50 min-[420px]:px-4 min-[420px]:text-[0.72rem] min-[420px]:tracking-[0.18em] ${stylesByVariant[variant]} ${className}`}
       {...props}
     />
   );

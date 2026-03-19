@@ -97,8 +97,8 @@ export default function GoalsPage() {
           const progress = goalProgress(goal);
           return (
             <Card key={goal.id} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+                <div className="min-w-0">
                   <p className="text-sm matrix-label">{goal.name}</p>
                   <p className="text-xs matrix-label text-[var(--muted)]">
                     {fmt(goal.currentAmount)} / {fmt(goal.targetAmount)}
@@ -109,7 +109,7 @@ export default function GoalsPage() {
                     </p>
                   ) : null}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button
                     variant="ghost"
                     className="px-2 py-1 text-[0.64rem]"
@@ -162,7 +162,7 @@ export default function GoalsPage() {
               placeholder="Emergency fund"
             />
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Target
@@ -196,7 +196,7 @@ export default function GoalsPage() {
               />
             </label>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 Wallet (Optional)

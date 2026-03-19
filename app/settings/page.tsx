@@ -38,7 +38,7 @@ export default function SettingsPage() {
           <p className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
             Feature Hubs
           </p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <Link href="/budgets">
               <Button variant="secondary" className="w-full">
                 Budgets

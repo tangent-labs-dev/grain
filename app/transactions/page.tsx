@@ -155,7 +155,7 @@ export default function TransactionsPage() {
         title="Transactions"
         subtitle="History"
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button variant="secondary" className="text-xs" onClick={() => setShowFilters(true)}>
               Filters{activeFilterCount ? ` (${activeFilterCount})` : ""}
             </Button>
@@ -268,7 +268,7 @@ export default function TransactionsPage() {
             </select>
           </label>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
                 Min Amount

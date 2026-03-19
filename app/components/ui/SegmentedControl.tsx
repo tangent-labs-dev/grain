@@ -25,14 +25,14 @@ export function SegmentedControl<T extends string>({
       </legend>
       <div
         className="grid gap-2 rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] p-1"
-        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))" }}
       >
         {options.map((option) => (
           <button
             key={option.value}
             type="button"
             onClick={() => onChange(option.value)}
-            className={`matrix-label rounded-[10px] px-3 py-2 text-xs ${
+            className={`matrix-label rounded-[10px] px-2 py-2 text-[0.68rem] leading-tight min-[420px]:px-3 min-[420px]:text-xs ${
               value === option.value
                 ? "bg-white text-black"
                 : "text-[var(--foreground)]"

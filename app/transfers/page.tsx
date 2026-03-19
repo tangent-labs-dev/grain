@@ -92,8 +92,8 @@ export default function TransfersPage() {
       <section className="mt-4 space-y-2">
         {transfers.map((transfer) => (
           <Card key={transfer.id}>
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+              <div className="min-w-0">
                 <p className="text-sm matrix-label">
                   {walletMap.get(transfer.fromWalletId)} →{" "}
                   {walletMap.get(transfer.toWalletId)}
@@ -116,7 +116,7 @@ export default function TransfersPage() {
         subtitle="Move between wallets"
       >
         <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-xs matrix-label text-[var(--muted)]">
                 From

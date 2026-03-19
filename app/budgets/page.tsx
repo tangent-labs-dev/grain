@@ -97,7 +97,7 @@ export default function BudgetsPage() {
         {loading ? <p className="muted text-sm">Loading budgets...</p> : null}
         {progress.map((item) => (
           <Card key={item.id} className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
               <p className="text-sm matrix-label">{item.categoryName}</p>
               <Button
                 variant="danger"

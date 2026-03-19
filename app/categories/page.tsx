@@ -60,7 +60,7 @@ export default function CategoriesPage() {
             title={category.name}
             subtitle={category.archived ? "Archived" : "Active"}
             trailing={
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant="ghost"
                   className="px-2 py-1 text-[0.65rem]"
@@ -138,7 +138,7 @@ export default function CategoriesPage() {
             value={editingName}
             onChange={(event) => setEditingName(event.target.value)}
           />
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
             <Button
               onClick={async () => {
                 if (!editingId || !editingName.trim()) return;
