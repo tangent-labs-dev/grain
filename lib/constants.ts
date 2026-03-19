@@ -58,3 +58,6 @@ export const DEFAULT_WALLETS: Wallet[] = [
     updatedAt: now,
   },
 ];
+
+export const ONBOARDING_STORAGE_KEY = "grain:onboarding-seen:v1";
+export const ONBOARDING_START_EVENT = "grain:onboarding:start";

@@ -7,6 +7,7 @@ import { Button } from "@/app/components/ui/Button";
 import { Card } from "@/app/components/ui/Card";
 import { Input } from "@/app/components/ui/Input";
 import { Modal } from "@/app/components/ui/Modal";
+import { ONBOARDING_START_EVENT } from "@/lib/constants";
 import {
   exportData,
   getPreferences,
@@ -64,6 +65,25 @@ export default function SettingsPage() {
               Manage Categories
             </Button>
           </Link>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
+            Onboarding
+          </p>
+          <p className="text-sm muted">
+            Replay the guided walkthrough to review every module and navigation
+            path.
+          </p>
+          <Button
+            variant="secondary"
+            className="w-full"
+            onClick={() => {
+              window.dispatchEvent(new Event(ONBOARDING_START_EVENT));
+            }}
+          >
+            Replay Onboarding
+          </Button>
         </Card>
 
         <Card className="space-y-3">
